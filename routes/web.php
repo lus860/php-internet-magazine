@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/hello', function () {
-//    return view('welcome');
-//});
+Route::get('/hello', function () {
+    return view('admin.product.imades');
+});
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 //Route::get('/home', 'HomeController@index')->name('home');
 
@@ -47,6 +47,15 @@ Route::group(['prefix' => config('admin.prefix')], function () {
         Route::delete('/destroy/{id}', 'Admin\CategoryController@destroy')->name('category_destroy');
     });
 
+    Route::prefix('/user')->group(function () {
+        Route::get('/', 'Admin\UserController@index')->name('users');
+        Route::get('/create', 'Admin\UserController@create')->name('user_create');
+        Route::post('/store', 'Admin\UserController@store')->name('user_store');
+        Route::get('/edit/{id}', 'Admin\UserController@edit')->name('user_edit');
+        Route::post('/update/{id}', 'Admin\UserController@update')->name('user_update');
+        Route::delete('/destroy/{id}', 'Admin\UserController@destroy')->name('user_destroy');
+    });
+
     Route::prefix('/subcategory')->group(function () {
         Route::get('/', 'Admin\SubCategoryController@index')->name('subcategories');
         Route::get('/create', 'Admin\SubCategoryController@create')->name('subcategory_create');
@@ -63,6 +72,9 @@ Route::group(['prefix' => config('admin.prefix')], function () {
         Route::get('/edit/{id}', 'Admin\ProductController@edit')->name('product_edit');
         Route::post('/update/{id}', 'Admin\ProductController@update')->name('product_update');
         Route::delete('/destroy/{id}', 'Admin\ProductController@destroy')->name('product_destroy');
+
+        Route::post('/img/update/{prod_id}/{img_id}', 'Admin\ProductController@imgUpdate')->name('image_update');
+        Route::delete('/img/destroy/{prod_id}/{img_id}', 'Admin\ProductController@imgDestroy')->name('image_destroy');
     });
 
     Route::prefix('/brand')->group(function () {
@@ -81,14 +93,41 @@ Route::group(['prefix' => config('admin.prefix')], function () {
 Route::group(['prefix' => Localization::getPrefix(), 'middleware' => 'languageManager'], function () {
 
     Route::get('/', 'User\HomeController@index')->name('index');
-    Route::post('/ajax', 'User\HomeController@getProduct')->name('product_by_name');
-    Route::post('/ajax/range', 'User\HomeController@getProductRange')->name('product_by_range');
-    Route::get('/products', 'User\HomeController@allProduct')->name('all_product');
-    Route::get('/cart', 'User\HomeController@cart')->name('cart_product');
-    Route::get('/product/{id}', 'User\HomeController@product')->name('product');
-    Route::get('/category/{id}', 'User\HomeController@categoryProduct')->name('category_product');
-    Route::get('/subcategory/{id}', 'User\HomeController@subCategoryProduct')->name('subcategory_product');
-    Route::get('/brand/{id}', 'User\HomeController@brandProduct')->name('brand_product');
-    Route::get('/user/login', 'User\AuthController@showSignInForm')->name('user_login');
-    Route::get('/user/signup', 'User\AuthController@showSignUpForm')->name('user_signup');
+    Route::prefix('/ajax')->group(function () {
+        Route::post('/name', 'User\ProductController@getProductAjax')->name('product_by_name');
+        Route::post('/range', 'User\ProductController@getProductByRangeAjax')->name('product_by_range');
+        Route::post('/cart', 'User\CartController@setProductCart')->name('product_to_cart');
+
+    });
+
+    Route::prefix('/cart')->group(function () {
+        Route::get('/', 'User\CartController@cart')->name('cart_product');
+        Route::get('/updateUp/{id}', 'User\CartController@updateUpProductCart')->name('update_up_cart');
+        Route::get('/updateDown/{id}', 'User\CartController@updateDownProductCart')->name('update_down_cart');
+        Route::get('/remove/{id}', 'User\CartController@removeProductCart')->name('remove_cart');
+        Route::post('/update', 'User\CartController@updateProductCart')->name('update_cart');
+    });
+
+    Route::prefix('/user')->group(function () {
+        Route::get('/login', 'User\AuthController@showSignInForm')->name('user_login');
+        Route::get('/signup', 'User\AuthController@showSignUpForm')->name('user_signup');
+        Route::post('order/signup', 'User\AuthController@register')->name('order_signup');
+        Route::post('order/logged', 'User\AuthController@logged')->name('order_logged');
+    });
+
+    //ProductController
+    Route::get('/product/{id}', 'User\ProductController@getProduct')->name('product');
+    Route::get('/category/{id}', 'User\ProductController@categoryProduct')->name('category_product');
+    Route::get('/subcategory/{id}', 'User\ProductController@subcategoryProduct')->name('subcategory_product');
+    Route::get('/brand/{id}', 'User\ProductController@brandProduct')->name('brand_product');
+    Route::get('/products', 'User\ProductController@allProduct')->name('all_product');
+
+//    Route::get('/cart/updateUp/{id}', 'User\HomeController@updateUpProductCart')->name('update_up_cart');
+//    Route::get('/cart/updateDown/{id}', 'User\HomeController@updateDownProductCart')->name('update_down_cart');
+//    Route::get('/cart/remove/{id}', 'User\HomeController@removeProductCart')->name('remove_cart');
+//    Route::post('/cart/update', 'User\HomeController@updateProductCart')->name('update_cart');
+    //Route::get('/cart', 'User\HomeController@cart')->name('cart_product');
+
+//    Route::get('/user/login', 'User\AuthController@showSignInForm')->name('user_login');
+//    Route::get('/user/signup', 'User\AuthController@showSignUpForm')->name('user_signup');
 });

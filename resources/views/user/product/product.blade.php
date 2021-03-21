@@ -1,4 +1,4 @@
-@extends('user/layouts.app')
+@extends('user.layouts.app')
 
 @section('content')
     <section id="advertisement">
@@ -11,37 +11,56 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-3">
-                    @include('user/includes.left_sidebar')
+                    @include('user.includes.left_sidebar')
                 </div>
 
                 <div class="col-sm-9 padding-right">
                     <div class="product-details"><!--product-details-->
                         <div class="col-sm-5">
                             <div class="view-product">
-                                <img src="{{ $product->img}}" alt="" />
+                                <img src="@if($product->mainImg()) {{$product->mainImg()}}
+                                @elseif($product->images()->first()->img) {{$product->images()->first()->img}}
+                                @else {{asset('/admin/dist/img/product/no-image.png')}} @endif" alt="" class="product-image"/>
                                 <h3>ZOOM</h3>
                             </div>
                             <div id="similar-product" class="carousel slide" data-ride="carousel">
 
                                 <!-- Wrapper for slides -->
                                 <div class="carousel-inner">
-                                    <div class="item active">
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar1.jpg')}}" alt=""></a>
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar2.jpg')}}" alt=""></a>
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar3.jpg')}}" alt=""></a>
+                                    <div class="item active ">
+                                        @foreach($product->images as $image)
+                                        @if(($loop->iteration)%4 == 0)
                                     </div>
                                     <div class="item">
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar1.jpg')}}" alt=""></a>
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar2.jpg')}}" alt=""></a>
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar3.jpg')}}" alt=""></a>
+                                        @endif
+                                        <a class="product-image-thumb" href=""><img src="{{$image->img}}" alt="" style="width: 84px;heght:84px!important;"></a>
+
+                                        @if( $loop->last)
                                     </div>
-                                    <div class="item">
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar1.jpg')}}" alt=""></a>
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar2.jpg')}}" alt=""></a>
-                                        <a href=""><img src="{{ asset('user/images/product-details/similar3.jpg')}}" alt=""></a>
-                                    </div>
+                                        @endif
+                                        @endforeach
 
                                 </div>
+
+
+{{--                                <div class="carousel-inner">--}}
+{{--                                    <div class="item active">--}}
+{{--                                        <a class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar1.jpg')}}" alt="" ></a>--}}
+{{--                                        <a class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar2.jpg')}}" alt=""></a>--}}
+{{--                                        <a  class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar3.jpg')}}" alt="" ></a>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="item">--}}
+{{--                                        <a class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar1.jpg')}}" alt=""></a>--}}
+{{--                                        <a class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar2.jpg')}}" alt=""></a>--}}
+{{--                                        <a class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar3.jpg')}}" alt=""></a>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="item">--}}
+{{--                                        <a class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar1.jpg')}}" alt=""></a>--}}
+{{--                                        <a class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar2.jpg')}}" alt=""></a>--}}
+{{--                                        <a class="product-image-thumb" href=""><img src="{{ asset('user/images/product-details/similar3.jpg')}}" alt=""></a>--}}
+{{--                                    </div>--}}
+
+{{--                                </div>--}}
 
                                 <!-- Controls -->
                                 <a class="left item-control" href="#similar-product" data-slide="prev">
@@ -62,10 +81,10 @@
                                 <h2>{{ ucfirst( $product->name).' '. ucfirst( $product->brand->name)}} </h2>
                                 <p>Web ID: {{$product->id}}</p>
                                 <span>
-									<span> {{'$'.$product->price}}</span>
+									<span> @if($product->new_price !==0) ${{$product->new_price}} @else ${{$product->price}} @endif</span>
 									<label>Quantity:</label>
-									<input type="text" value="" />
-									<button type="button" class="btn btn-fefault cart">
+									<input type="text" value="" id="quantity_input"/>
+									<button type="button" class="btn btn-fefault cart" id="quantity_button" data-id="{{$product->id}}">
 										<i class="fa fa-shopping-cart"></i>
 										Add to cart
 									</button>
@@ -125,6 +144,15 @@
 @endpush
 @push('js')
     <script>
+        $(document).ready(function() {
+            $('.product-image-thumb').on('click', function (event) {
+                event.preventDefault()
+                var $image_element = $(this).find('img')
+                $('.product-image').prop('src', $image_element.attr('src'))
+                $('.product-image-thumb.active').removeClass('active')
+                $(this).addClass('active')
+            })
+        })
     </script>
 @endpush
 

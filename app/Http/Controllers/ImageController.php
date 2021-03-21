@@ -51,8 +51,9 @@ class ImageController extends Controller
      * @param $imageName
      * @return mixed
      */
-    public static function imageDelete($imageName, $profile=null) {
+    public static function imageDelete($imageName, $profile=null, $id = null) {
         $imagesPath = ($profile) ? self::path['profile'] : self::path['product'];
+        $imagesPath = ($id) ? $imagesPath.$id.'/': $imagesPath;
 
         $img = explode('/',$imageName);
         $full_img_url = $imagesPath.'/'.end($img);
@@ -65,6 +66,17 @@ class ImageController extends Controller
 
 
     }
+
+    public static function pathDelete($profile=null, $id = null) {
+        $imagesPath = ($profile) ? self::path['profile'] : self::path['product'];
+        $imagesPath = ($id) ? $imagesPath.$id : $imagesPath;
+        if(file_exists($imagesPath)){
+            rmdir($imagesPath);
+        }
+
+    }
+
+
 
     /**
      * upload image to storage
@@ -100,10 +112,12 @@ class ImageController extends Controller
         }
     }
 
-    public static function imageUpload($img, $profile = null, $tWidth=448,$iWidth=448)
+    public static function imageUpload($img, $profile = null, $id = null, $tWidth=448,$iWidth=448)
     {
         $imagesPath = ($profile) ? self::path['profile'] : self::path['product'];
-        $imageName = time().'.'.$img->extension();
+        $imagesPath = ($id) ?  $imagesPath.$id.'/': $imagesPath;
+
+        $imageName = md5(uniqid(time())).'.'.$img->extension();
 
         $upload_image = $img->move(public_path($imagesPath), $imageName);
 

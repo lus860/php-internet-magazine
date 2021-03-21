@@ -8,22 +8,28 @@
                     <div id="slider-carousel" class="carousel slide" data-ride="carousel">
                         <ol class="carousel-indicators">
                             @foreach($productSale as $item)
+                                @if($item->new_price !==0 && $item->new_price < $item->price)
                             <li data-target="#slider-carousel" data-slide-to="{{$item->id}}" class="@if ($loop->first) active @endif"></li>
+                                @endif
                             @endforeach
                         </ol>
                         <div class="carousel-inner">
                             @foreach($productSale as $item)
+                                @if($item->new_price !==0 && $item->new_price < $item->price)
                             <div class="item  @if ($loop->first) active @endif">
                                 <div class="col-sm-6">
                                     <h1><span>SALE</span></h1>
-                                    <h2>{{'$'.$item->price}}</h2>
+                                    <h2><del>{{'$'.$item->price}}</del>  {{' $'.$item->new_price}}</h2>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
                                     <button type="button" class="btn btn-default get"><a href="{{ route('product' ,$item->id) }}">Product Details</a></button>
                                 </div>
                                 <div class="col-sm-6">
-                                    <img src="{{$item->img }}" class="girl img-responsive" alt=""/>
+                                    <img src="@if($item->mainImg()) {{$item->mainImg()}}
+                                    @elseif($item->images()->first()->img) {{$item->images()->first()->img}}
+                                    @else {{asset('/admin/dist/img/product/no-image.png')}} @endif" class="girl img-responsive" alt=""/>
                                 </div>
                             </div>
+                                @endif
                             @endforeach
                         </div>
                         <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
@@ -54,16 +60,18 @@
                             <div class="product-image-wrapper">
                                 <div class="single-products">
                                     <div class="productinfo text-center">
-                                        <img src="{{ $item->img}}" alt="" />
-                                        <h2>{{ '$'.$item->price}}</h2>
+                                        <img src="@if($item->mainImg()) {{$item->mainImg()}}
+                                        @elseif($item->images()->first()->img) {{$item->images()->first()->img}}
+                                        @else {{asset('/admin/dist/img/product/no-image.png')}} @endif" alt="" />
+                                        <h2>@if($item->new_price !==0) ${{$item->new_price}} @else ${{$item->price}} @endif</h2>
                                         <p>{{ $item->name.' '.$item->brand->name}}</p>
-                                        <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                        <a href="#" class="btn btn-default add-to-cart" data-id="{{$item->id}}"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                                     </div>
                                     <div class="product-overlay">
                                         <div class="overlay-content">
-                                            <h2>{{ '$'.$item->price}}</h2>
+                                            <h2>@if($item->new_price !==0) ${{$item->new_price}} @else ${{$item->price}} @endif</h2>
                                             <p>{{  $item->name.' '.$item->brand->name}}</p>
-                                            <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                            <a href="#" class="btn btn-default add-to-cart" data-id="{{$item->id}}"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                                         </div>
                                     </div>
                                     @if($item->status == 1)
@@ -101,14 +109,15 @@
                                         <div class="product-image-wrapper">
                                             <div class="single-products">
                                                 <div class="productinfo text-center">
-                                                    <a href="{{ route('product' ,$item->id) }}">
-                                                    <img src="{{ $product->img}}" alt="" />
+                                                    <a href="{{ route('product' ,$product->id) }}">
+                                                    <img src="@if($product->mainImg()) {{$product->mainImg()}}
+                                                    @elseif($product->images()->first()->img) {{$product->images()->first()->img}}
+                                                    @else {{asset('/admin/dist/img/product/no-image.png')}} @endif" alt="" />
                                                     </a>
-                                                    <h2>{{ '$'.$product->price}}</h2>
+                                                    <h2>@if($product->new_price !==0) ${{$product->new_price}} @else ${{$product->price}} @endif</h2>
                                                     <p>{{ $product->name.' '.$product->brand->name}}</p>
-                                                    <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                                    <a href="#" class="btn btn-default add-to-cart" data-id="{{$product->id}}"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -230,7 +239,6 @@
     <script>
 
         $(function () {
-
             $('.product-name').click(function () {
 
                 let name = $(this).data("name");
@@ -244,14 +252,10 @@
                     },
 
                     success: function (data) {
-                        console.log(data)
                         $('#'+name).html(data);
                         $('#'+name).addClass('active in');
                     },
-
                     error: function (msg) {
-
-                        alert('Ошибка');
 
                     }
 

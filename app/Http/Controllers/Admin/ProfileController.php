@@ -35,6 +35,12 @@ class ProfileController extends Controller
             'file' => ['nullable', 'image', 'mimes:jpeg,png,jpg'],
         ]);
 
+        if(Auth::user()->email !== $request->email){
+            $request->validate( [
+                'email' => ['unique:users'],
+            ]);
+        }
+
         $user = [
             'firstname' => $request->input('firstname'),
             'lastname' => $request->input('lastname'),
@@ -59,6 +65,7 @@ class ProfileController extends Controller
             $image = ImageController::imageUpload($request->file, true);
             $user['image'] = $image;
         }
+
         if($user){
 
             $id = Auth::user()->id;

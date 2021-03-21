@@ -23,7 +23,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $title = 'Category';
+        $title = 'Categories';
         $categories = Category::all();
         return view('admin.category.index', ['title' => $title, 'categories' => $categories]);
     }

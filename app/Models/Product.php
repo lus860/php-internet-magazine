@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\ProductImage;
 use App\Models\Brand;
 
 class Product extends Model
@@ -21,7 +22,7 @@ class Product extends Model
     ];
 
     protected $fillable = [
-        'name', 'img', 'status', 'sale', 'price', 'quantity', 'category_id', 'subcategory_id', 'brand_id'
+        'name', 'img', 'status', 'sale', 'price', 'new_price','quantity', 'category_id', 'subcategory_id', 'brand_id'
     ];
 
     public function category()
@@ -38,5 +39,16 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+
+    public function images(){
+
+        return $this->hasMany(ProductImage::class, 'product_id');
+    }
+
+    public function mainImg()
+    {
+        return $this->images()->where('status',1)->first()->img;
+    }
+
 
 }

@@ -39,6 +39,9 @@
                             {{ __('product.price') }}
                         </th>
                         <th>
+                            {{ __('product.new_price') }}
+                        </th>
+                        <th>
                             {{ __('product.quantity') }}
                         </th>
                         <th>
@@ -78,10 +81,15 @@
                               {{$item->name}}
                         </td>
                         <td>
-                            <img src="{{$item->img}}" style="width: 100px">
+                            <img src="@if($item->mainImg()) {{$item->mainImg()}}
+                            @elseif($item->images()->first()->img) {{$item->images()->first()->img}}
+                            @else {{asset('/admin/dist/img/product/no-image.png')}} @endif" style="width: 100px">
                         </td>
                         <td>
                               {{$item->price}}
+                        </td>
+                        <td>
+                            {{$item->new_price}}
                         </td>
                         <td>
                             {{$item->quantity}}

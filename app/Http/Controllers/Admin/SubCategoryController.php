@@ -21,7 +21,7 @@ class SubCategoryController extends Controller
      */
     public function index()
     {
-        $title = 'Subcategory';
+        $title = 'Subcategories';
         $subcategories = SubCategory::all();
         return view('admin.subcategory.index', ['title' => $title, 'subcategories' => $subcategories]);
     }

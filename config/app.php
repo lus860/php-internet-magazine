@@ -164,6 +164,7 @@ return [
 
         Intervention\Image\ImageServiceProvider::class,
 
+        Darryldecode\Cart\CartServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -233,7 +234,9 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Image' => Intervention\Image\Facades\Image::class,
-        'Localization' => App\Services\Localization\Facades\LocalizationService::class
+        'Localization' => App\Services\Localization\Facades\LocalizationService::class,
+
+        'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
 
     ],
 

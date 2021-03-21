@@ -121,7 +121,7 @@
                         <ul class="nav navbar-nav">
                             <li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
                             <li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-                            <li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+                            <li><a href="{{ route('cart_product')}}"><i class="fa fa-shopping-cart"></i> Cart (<span id="cart-qty">{{ session('cart_id')? \Cart::session(session('cart_id'))->getTotalQuantity():0}}</span>)</a></li>
                             @guest
                             <li><a href="{{ route('user_login')}}"><i class="fa fa-lock"></i>{{__('auth.sign_in')}}</a></li>
                                 @if (Route::has('register'))
@@ -395,11 +395,87 @@
 
                 error: function (msg) {
 
+                }
+            });
+        });
 
+
+        $('.add-to-cart').click(function (event) {
+            event.preventDefault()
+            let qty = parseInt($('#quantity_input').val())
+            let id = $(this).data("id");
+
+            $.ajax({
+                url: '{{ route('product_to_cart') }}',
+                type: "POST",
+                data: { id: id ,qty: qty?qty:1},
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+
+                success: function (data) {
+                    let total_qty = parseInt($('#cart-qty').text())
+                    total_qty += qty ? qty:1
+                    $('#cart-qty').text(total_qty)
+                    console.log(data)
+                },
+                error: function (msg) {
 
                 }
-
             });
+        });
+
+        $('#quantity_button').click(function (event) {
+            event.preventDefault()
+            let qty = parseInt($('#quantity_input').val())
+            let id = $(this).data("id");
+
+            $.ajax({
+                url: '{{ route('product_to_cart') }}',
+                type: "POST",
+                data: { id: id ,qty: qty?qty:1},
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+
+                success: function (data) {
+                    let total_qty = parseInt($('#cart-qty').text())
+                    total_qty += qty ? qty:1
+                    $('#cart-qty').text(total_qty)
+                    console.log(data)
+                },
+                error: function (msg) {
+
+                }
+            });
+        });
+
+        $(".cart_quantity_input").on("change", function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            let id = $(this).data("id")
+            var formData = {
+                quantity: $(this).val(),
+                id: id
+            };
+            var type = "POST";
+            var ajaxurl = "{{ route('update_cart') }}";
+            $.ajax({
+                type: type,
+                url: ajaxurl,
+                data: formData,
+                success: function (data) {
+                    location.reload();
+                    return false;
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+
+            })
         });
 
     })

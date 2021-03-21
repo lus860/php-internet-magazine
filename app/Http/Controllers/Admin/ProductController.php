@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\Brand;
+use App\Models\ProductImage;
 
 class ProductController extends Controller
 {
@@ -25,7 +26,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $title = 'Product';
+        $title = 'Products';
         $products = Product::all();
         return view('admin.product.index', ['title' => $title, 'products' => $products]);
     }
@@ -56,14 +57,15 @@ class ProductController extends Controller
         $request->validate( [
             'name' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric'],
+            'new_price' => ['numeric'],
             'quantity' => ['required', 'numeric'],
             'category_id' => ['required'],
             'brand_id' => ['required'],
-            'image' => ['required', 'max:10000', 'mimes:jpeg,png,jpg'],
         ]);
 
         $data['name'] = $request->name;
         $data['price'] = $request->price;
+        $data['new_price'] = $request->new_price;
         $data['quantity'] = $request->quantity;
         $data['category_id'] = $request->category_id;
         $data['subcategory_id'] = $request->subcategory_id;
@@ -71,12 +73,29 @@ class ProductController extends Controller
         $data['status'] =  $request->status ? 1:0;
         $data['sale'] =  $request->sale ? 1:0;
 
+        $product = Product::create($data);
+
         if($request->image) {
-            $image = ImageController::imageUpload($request->image);
-            $data['img'] = $image;
+            $images = $request->image;
+            foreach ($images as $img) {
+                $image = ImageController::imageUpload($img, null, $product->id);
+                if($image) {
+                    $dataImg[] = $image;
+                }
+            }
         }
 
-        $product = Product::create($data);
+        if($request->main_image) {
+            $main_image = $request->main_image;
+            $image = ImageController::imageUpload($main_image, null, $product->id);
+            ProductImage::create(['product_id' => $product->id, 'img' => $image, 'status'=>1]);
+        }
+
+        if( count($dataImg)>0 ){
+            foreach ($dataImg as $item) {
+                ProductImage::create(['product_id' => $product->id, 'img' => $item]);
+            }
+        }
 
         if ($product) {
             return redirect('/admin/product')->with('success', __('product.product_create'));
@@ -129,28 +148,37 @@ class ProductController extends Controller
         $request->validate( [
             'name' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric'],
+            'new_price' => ['numeric'],
             'quantity' => ['required', 'numeric'],
             'category_id' => ['required'],
             'brand_id' => ['required'],
-            'image' => ['mimes:jpeg,png,jpg'],
+//            'image' => ['mimes:jpeg,png,jpg'],
         ]);
 
         $data['name'] = $request->name;
         $data['price'] = $request->price;
+        $data['new_price'] = $request->new_price;
         $data['quantity'] = $request->quantity;
         $data['category_id'] = $request->category_id;
         $data['subcategory_id'] = $request->subcategory_id;
         $data['brand_id'] = $request->brand_id;
-        $data['status'] =  $request->status ? 1:0;
-        $data['sale'] =  $request->sale ? 1:0;
+        $data['status'] = isset($request->status) ? 1:0;
+        $data['sale'] =  isset($request->sale) ? 1:0;
 
         $product = Product::find($id);
         if($request->image) {
-            if($product->img) {
-                ImageController::imageDelete($product->img);
+            $images = $request->image;
+            foreach ($images as $img) {
+                $image = ImageController::imageUpload($img, null, $product->id);
+                if($image) {
+                    $dataImg[] = $image;
+                }
             }
-            $image = ImageController::imageUpload($request->image);
-            $data['img'] = $image;
+        }
+        if( isset($dataImg) && count($dataImg)>0 ){
+            foreach ($dataImg as $item) {
+                ProductImage::create(['product_id' => $product->id, 'img' => $item]);
+            }
         }
 
         if($product){
@@ -174,8 +202,11 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         if($product){
-            if($product->img) {
-                ImageController::imageDelete($product->img);
+            if($product->images) {
+                foreach ($product->images as $item) {
+                    ImageController::imageDelete($item->img, null, $id);
+                }
+                ImageController::pathDelete(null, $id);
             }
             if( $product->delete()){
                 return redirect('/admin/product')->with('success', __('product.product_destroy'));
@@ -184,4 +215,35 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'Some mistake went !!');
         }
     }
+
+
+    public function imgUpdate(Request $request, $prod_id, $img_id)
+    {
+        $main_img = ProductImage::find($img_id);
+        if($request->hasFile('main_img')) {
+            if($main_img->img) {
+                ImageController::imageDelete($main_img->img, null, $prod_id);
+            }
+            $image = ImageController::imageUpload($request->main_img , null, $prod_id);
+            if(ProductImage::where('id',  $img_id)->update(['img' => $image])){
+              return redirect('/admin/product/edit/'.$prod_id);
+            }
+
+        }
+    }
+
+
+    public function imgDestroy($prod_id, $img_id)
+    {
+        $image = ProductImage::find($img_id);
+        if ($image) {
+            if ($image->img) {
+                ImageController::imageDelete($image->img, null,$prod_id );
+            }
+            $image->delete();
+            return redirect('/admin/product/edit/' . $prod_id);
+
+        }
+    }
+
 }

@@ -9,16 +9,18 @@
                 <div class="product-image-wrapper">
                     <div class="single-products">
                         <div class="productinfo text-center">
-                            <img src="{{$product->img}}" alt="" />
-                            <h2>{{'$'.$product->price}}</h2>
+                            <img src="@if($product->mainImg()) {{$product->mainImg()}}
+                            @elseif($product->images()->first()->img) {{$product->images()->first()->img}}
+                            @else {{asset('/admin/dist/img/product/no-image.png')}} @endif" alt="" />
+                            <h2>@if($product->new_price !==0) ${{$product->new_price}} @else ${{$product->price}} @endif</h2>
                             <p>{{ $product->name.' '.$product->brand->name}}</p>
-                            <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                            <a href="#" class="btn btn-default add-to-cart" data-id="{{$product->id}}"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                         </div>
                         <div class="product-overlay">
                             <div class="overlay-content">
-                                <h2>{{'$'.$product->price}}</h2>
+                                <h2>@if($product->new_price !==0) ${{$product->new_price}} @else ${{$product->price}} @endif</h2>
                                 <p>{{ $product->name.' '.$product->brand->name}}</p>
-                                <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                <a href="#" class="btn btn-default add-to-cart" data-id="{{$product->id}}"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                             </div>
                         </div>
                     </div>

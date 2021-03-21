@@ -26,7 +26,7 @@ class MenuController extends Controller
 
     public function index()
     {
-        $title = 'Menu';
+        $title = 'Menus';
         $submenu = Menu::orderBy('sort_order')->get();
         return view('admin.menu.index', ['title' => $title, 'submenu' => $submenu]);
     }
