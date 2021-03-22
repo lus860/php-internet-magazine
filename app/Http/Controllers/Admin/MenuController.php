@@ -58,27 +58,28 @@ class MenuController extends Controller
         if(count ($item->childrens) >0) {
             foreach ($item->childrens as $children) {
                 $this->parentCount = '----';
-                if ($item->parent_id !== 0){
+                if ($item->parent_id !== 0) {
                     $this->parentCount($item);
                 }
                 $this->newMenuItems[$children->id] = $this->parentCount.$children->name;
-                if($count == count($this->newMenuItems)) {
+                if ($count == count($this->newMenuItems)) {
                     return;
-                } elseif (count ($children->childrens) >0) {
+                } elseif (count($children->childrens) > 0) {
                     $this->rekursiya($children, $count);
                 }
             }
         }
     }
 
-    public function parentCount($item) {
+    public function parentCount($item)
+    {
 
         $parent_id = $item->parent_id;
         if ($parent_id == 0) {
             return;
         } else {
             $menuItem = Menu::find($parent_id);
-            $this->parentCount .='----';
+            $this->parentCount .= '----';
             $this->parentCount($menuItem);
         }
 
@@ -155,21 +156,22 @@ class MenuController extends Controller
 
     }
 
-    public function recur1($nested_array=[], &$simplified_list=[]) {
+    public function recur1($nested_array = [], &$simplified_list = [])
+    {
 
         static $counter = 0;
 
-        foreach($nested_array as $k => $v){
+        foreach ($nested_array as $k => $v) {
 
-            $sort_order = $k+1;
+            $sort_order = $k + 1;
             $simplified_list[] = [
                 "id" => $v['id'],
                 "parent_id" => 0,
                 "sort_order" => $sort_order
             ];
 
-            if(!empty($v["children"])) {
-                $counter+=1;
+            if (!empty($v["children"])) {
+                $counter += 1;
                 $this->recur2($v['children'], $simplified_list, $v['id']);
             }
 
@@ -189,7 +191,7 @@ class MenuController extends Controller
                 "sort_order" => $sort_order
             ];
 
-            if(!empty($v["children"])){
+            if (!empty($v["children"])) {
                 $counter+=1;
                 $this->recur2($v['children'], $simplified_list, $v['id']);
             }

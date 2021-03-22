@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ImageController;
+use App\Http\Requests\Product\Update;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
@@ -143,18 +144,8 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Update $request, $id)
     {
-        $request->validate( [
-            'name' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'numeric'],
-            'new_price' => ['numeric'],
-            'quantity' => ['required', 'numeric'],
-            'category_id' => ['required'],
-            'brand_id' => ['required'],
-//            'image' => ['mimes:jpeg,png,jpg'],
-        ]);
-
         $data['name'] = $request->name;
         $data['price'] = $request->price;
         $data['new_price'] = $request->new_price;
