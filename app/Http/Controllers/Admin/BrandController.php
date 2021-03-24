@@ -14,6 +14,7 @@ class BrandController extends Controller
         $this->middleware('IsAdmin');
 
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -23,7 +24,7 @@ class BrandController extends Controller
     public function index()
     {
         $title = 'Brand';
-        $brand = Brand::all();
+        $brand = Brand::paginate(5);
         return view('admin.brand.index', ['title' => $title, 'brands' => $brand]);
     }
 
@@ -42,12 +43,12 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
         ]);
 
@@ -63,7 +64,7 @@ class BrandController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -74,7 +75,7 @@ class BrandController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -82,19 +83,19 @@ class BrandController extends Controller
         $title = 'Edit Brand';
         $brand = Brand::find($id);
 
-        return view('admin.brand.edit', ['title' => $title,'brand' => $brand]);
+        return view('admin.brand.edit', ['title' => $title, 'brand' => $brand]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
 
         ]);
@@ -103,9 +104,9 @@ class BrandController extends Controller
 
         $brand = Brand::find($id);
 
-        if($brand){
-            Brand::where('id',  $id)->update($data);
-            return redirect('/admin/brand')->with('success',  __('brand.brand_update'));
+        if ($brand) {
+            Brand::where('id', $id)->update($data);
+            return redirect('/admin/brand')->with('success', __('brand.brand_update'));
 
             return redirect()->back()->with('error', __('message.error.some_mistake_went'));
         }
@@ -114,14 +115,14 @@ class BrandController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $brand = Brand::find($id);
-        if($brand){
-            if( $brand->delete()){
+        if ($brand) {
+            if ($brand->delete()) {
                 return redirect('/admin/brand')->with('success', __('brand.brand_destroy'));
             }
         } else {

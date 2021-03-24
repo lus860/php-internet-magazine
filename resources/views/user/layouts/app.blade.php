@@ -7,8 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="author" content="">
     <title>{{$title}}</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+          integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link href="{{ asset('user/css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{ asset('user/css/font-awesome.min.css')}}" rel="stylesheet">
     <link href="{{ asset('user/css/prettyPhoto.css')}}" rel="stylesheet">
@@ -17,45 +19,60 @@
     <link href="{{ asset('user/css/main.css')}}" rel="stylesheet">
     <link href="{{ asset('user/css/responsive.css')}}" rel="stylesheet">
     <link href="{{ asset('user/flags/css/flag-icon.css')}}" rel="stylesheet">
-    <!--[if lt IE 9]>
+<!--[if lt IE 9]>
     <script src="{{ asset('user/js/html5shiv.js')}}"></script>
     <script src="{{ asset('user/js/respond.min.js')}}"></script>
     <![endif]-->
-    <link rel="shortcut icon" href="{{ asset('user/images/ico/favicon.ico')}}">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('user/images/ico/apple-touch-icon-144-precomposed.png')}}">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('user/images/ico/apple-touch-icon-114-precomposed.png')}}">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('user/images/ico/apple-touch-icon-72-precomposed.png')}}">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144"
+          href="{{ asset('user/images/ico/apple-touch-icon-144-precomposed.png')}}">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114"
+          href="{{ asset('user/images/ico/apple-touch-icon-114-precomposed.png')}}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72"
+          href="{{ asset('user/images/ico/apple-touch-icon-72-precomposed.png')}}">
     <link rel="apple-touch-icon-precomposed" href="{{ asset('user/images/ico/apple-touch-icon-57-precomposed.png')}}">
     @stack('css')
     <style>
-        @media (min-width: 992px){
-            .dropdown-menu .dropdown-toggle:after{
+        @media (min-width: 992px) {
+            .dropdown-menu .dropdown-toggle:after {
                 border-top: .3em solid transparent;
                 border-right: 0;
                 border-bottom: .3em solid transparent;
                 border-left: .3em solid;
             }
-            .dropdown-menu .dropdown-menu{
-                margin-left:0; margin-right: 0;
+
+            .dropdown-menu .dropdown-menu {
+                margin-left: 0;
+                margin-right: 0;
             }
-            .dropdown-menu li{
+
+            .dropdown-menu li {
                 position: relative;
             }
-            .nav-item .submenu{
+
+            .nav-item .submenu {
                 display: none;
                 position: absolute;
-                left:100%; top:-7px;
+                left: 100%;
+                top: -7px;
             }
-            .nav-item .submenu-left{
-                right:100%; left:auto;
+
+            .nav-item .submenu-left {
+                right: 100%;
+                left: auto;
             }
-            .dropdown-menu > li:hover{ background-color: #B4B1AB;}
-            .dropdown-menu > li:hover > .submenu{
+
+            .dropdown-menu > li:hover {
+                background-color: #B4B1AB;
+            }
+
+            .dropdown-menu > li:hover > .submenu {
                 display: block;
-                color:black!important;
+                color: black !important;
             }
+
             .navbar-nav li ul.sub-menu li a:hover {
-                color:black!important;}
+                color: black !important;
+            }
         }
     </style>
     <script>
@@ -66,9 +83,9 @@
 
         // make it as accordion for smaller screens
         if ($(window).width() < 992) {
-            $('.dropdown-menu a').click(function(e){
+            $('.dropdown-menu a').click(function (e) {
                 e.preventDefault();
-                if($(this).next('.submenu').length){
+                if ($(this).next('.submenu').length) {
                     $(this).next('.submenu').toggle();
                 }
                 $('.dropdown').on('hide.bs.dropdown', function () {
@@ -112,7 +129,7 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="logo pull-left">
-                        <a href="/"><img src="{{ asset('user/images/home/logo.png')}}" alt="" /></a>
+                        <a href="/"><img src="{{ asset('user/images/home/logo.png')}}" alt=""/></a>
                     </div>
                 </div>
 
@@ -120,27 +137,39 @@
                     <div class="shop-menu pull-right">
                         <ul class="nav navbar-nav">
                             <li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
-                            <li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-                            <li><a href="{{ route('cart_product')}}"><i class="fa fa-shopping-cart"></i> Cart (<span id="cart-qty">{{ session('cart_id')? \Cart::session(session('cart_id'))->getTotalQuantity():0}}</span>)</a></li>
+                            <li><a href="{{ route('all_product')}}"
+                                   class="@if(url()->current() == route('all_product')) active @endif"><i
+                                        class="fab fa-product-hunt"></i>Products</a></li>
+                            <li><a href="{{ route('cart_product')}}"
+                                   class="@if(url()->current() == route('cart_product')) active @endif"><i
+                                        class="fa fa-shopping-cart"></i> Cart (<span
+                                        id="cart-qty">{{ session('cart_id')? \Cart::session(session('cart_id'))->getTotalQuantity():0}}</span>)</a>
+                            </li>
                             @guest
-                            <li><a href="{{ route('user_login')}}"><i class="fa fa-lock"></i>{{__('auth.sign_in')}}</a></li>
+                                <li><a href="{{ route('user_login')}}"
+                                       class="@if(url()->current() == route('user_login')) active @endif"><i
+                                            class="fa fa-lock"></i>{{__('auth.sign_in')}}
+                                    </a></li>
                                 @if (Route::has('register'))
                                     <li>
-                                        <a href="{{ route('user_signup') }}"><i class="fa fa-lock"></i>{{__('auth.sign_up')}}</a>
+                                        <a href="{{ route('user_signup') }}"
+                                           class="@if(url()->current() == route('user_signup')) active @endif"><i
+                                                class="fa fa-lock"></i>{{__('auth.sign_up')}}</a>
                                     </li>
                                 @endif
                             @else
                                 <li>
-                                <a href="{{ route('logout') }}"
-                                   onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                    <i class="fa fa-lock"></i>
-                                    {{__('auth.logout')}}
-                                </a>
+                                    <a href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();"
+                                       class="@if(url()->current() == route('logout')) active @endif">
+                                        <i class="fa fa-lock"></i>
+                                        {{__('auth.logout')}}
+                                    </a>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
                                 </li>
                             @endguest
                             @foreach(\App\Models\Language::getAll() as $language)
@@ -162,7 +191,8 @@
             <div class="row">
                 <div class="col-sm-9">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                data-target=".navbar-collapse">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
@@ -171,32 +201,32 @@
                     </div>
                     <div class="mainmenu pull-left">
                         <div class="collapse navbar-collapse" id="main_nav">
-{{--                            <ul class="nav navbar-nav collapse navbar-collapse">--}}
-{{--                                @foreach($active_menu as $submenu)--}}
-{{--                                    @if($submenu->parent_id ==0)--}}
-{{--                                        @if(count($submenu->childrens()->where('status', 1)->get())==0)--}}
-{{--                                            <li class="nav-item"><a class="nav-link" href="{{$submenu->url}}"> {{$submenu->name}}</a>--}}
-{{--                                            </li>--}}
-{{--                                        @elseif(count($submenu->childrens()->where('status', 1)->get())>0)--}}
-{{--                                            <li class="nav-item dropdown">--}}
-{{--                                                <a class="nav-link dropdown-toggle" href="{{$submenu->url}}" data-toggle="dropdown">  {{$submenu->name}}--}}
-{{--                                                    <i class="fa fa-angle-down"></i></a>--}}
-{{--                                                <ul class="dropdown-menu sub-menu">--}}
-{{--                                                    @foreach($submenu->childrens as $item)--}}
-{{--                                                        @if(count($item->childrens()->where('status', 1)->get())==0)--}}
-{{--                                                            <li><a class="dropdown-item" href="{{$item->url}}"> {{$item->name}} </a>--}}
-{{--                                                            </li>--}}
-{{--                                                        @else--}}
-{{--                                                            <li><a class="dropdown-item" href="{{$item->url}}"> {{$item->name}} <i class="fa fa-angle-down"></i></a>--}}
-{{--                                                                @include('user/includes.dropdown_menu',['items' => $item->childrens()->where('status', 1)->get()])--}}
-{{--                                                            </li>--}}
-{{--                                                        @endif--}}
-{{--                                                    @endforeach--}}
-{{--                                                </ul>--}}
-{{--                                        @endif--}}
-{{--                                    @endif--}}
-{{--                                @endforeach--}}
-{{--                            </ul>--}}
+                            {{--                            <ul class="nav navbar-nav collapse navbar-collapse">--}}
+                            {{--                                @foreach($active_menu as $submenu)--}}
+                            {{--                                    @if($submenu->parent_id ==0)--}}
+                            {{--                                        @if(count($submenu->childrens()->where('status', 1)->get())==0)--}}
+                            {{--                                            <li class="nav-item"><a class="nav-link" href="{{$submenu->url}}"> {{$submenu->name}}</a>--}}
+                            {{--                                            </li>--}}
+                            {{--                                        @elseif(count($submenu->childrens()->where('status', 1)->get())>0)--}}
+                            {{--                                            <li class="nav-item dropdown">--}}
+                            {{--                                                <a class="nav-link dropdown-toggle" href="{{$submenu->url}}" data-toggle="dropdown">  {{$submenu->name}}--}}
+                            {{--                                                    <i class="fa fa-angle-down"></i></a>--}}
+                            {{--                                                <ul class="dropdown-menu sub-menu">--}}
+                            {{--                                                    @foreach($submenu->childrens as $item)--}}
+                            {{--                                                        @if(count($item->childrens()->where('status', 1)->get())==0)--}}
+                            {{--                                                            <li><a class="dropdown-item" href="{{$item->url}}"> {{$item->name}} </a>--}}
+                            {{--                                                            </li>--}}
+                            {{--                                                        @else--}}
+                            {{--                                                            <li><a class="dropdown-item" href="{{$item->url}}"> {{$item->name}} <i class="fa fa-angle-down"></i></a>--}}
+                            {{--                                                                @include('user/includes.dropdown_menu',['items' => $item->childrens()->where('status', 1)->get()])--}}
+                            {{--                                                            </li>--}}
+                            {{--                                                        @endif--}}
+                            {{--                                                    @endforeach--}}
+                            {{--                                                </ul>--}}
+                            {{--                                        @endif--}}
+                            {{--                                    @endif--}}
+                            {{--                                @endforeach--}}
+                            {{--                            </ul>--}}
                         </div>
                     </div>
                 </div>
@@ -227,7 +257,7 @@
                         <div class="video-gallery text-center">
                             <a href="#">
                                 <div class="iframe-img">
-                                    <img src="{{ asset('user/images/home/iframe1.png')}}" alt="" />
+                                    <img src="{{ asset('user/images/home/iframe1.png')}}" alt=""/>
                                 </div>
                                 <div class="overlay-icon">
                                     <i class="fa fa-play-circle-o"></i>
@@ -242,7 +272,7 @@
                         <div class="video-gallery text-center">
                             <a href="#">
                                 <div class="iframe-img">
-                                    <img src="{{ asset('user/images/home/iframe2.png')}}" alt="" />
+                                    <img src="{{ asset('user/images/home/iframe2.png')}}" alt=""/>
                                 </div>
                                 <div class="overlay-icon">
                                     <i class="fa fa-play-circle-o"></i>
@@ -257,7 +287,7 @@
                         <div class="video-gallery text-center">
                             <a href="#">
                                 <div class="iframe-img">
-                                    <img src="{{ asset('user/images/home/iframe3.png')}}" alt="" />
+                                    <img src="{{ asset('user/images/home/iframe3.png')}}" alt=""/>
                                 </div>
                                 <div class="overlay-icon">
                                     <i class="fa fa-play-circle-o"></i>
@@ -272,7 +302,7 @@
                         <div class="video-gallery text-center">
                             <a href="#">
                                 <div class="iframe-img">
-                                    <img src="{{ asset('user/images/home/iframe4.png')}}" alt="" />
+                                    <img src="{{ asset('user/images/home/iframe4.png')}}" alt=""/>
                                 </div>
                                 <div class="overlay-icon">
                                     <i class="fa fa-play-circle-o"></i>
@@ -285,7 +315,7 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="address">
-                        <img src="{{ asset('user/images/home/map.png')}}" alt="" />
+                        <img src="{{ asset('user/images/home/map.png')}}" alt=""/>
                         <p>505 S Atlantic Ave Virginia Beach, VA(Virginia)</p>
                     </div>
                 </div>
@@ -348,9 +378,10 @@
                     <div class="single-widget">
                         <h2>About Shopper</h2>
                         <form action="#" class="searchform">
-                            <input type="text" placeholder="Your email address" />
-                            <button type="submit" class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i></button>
-                            <p>Get the most recent updates from <br />our site and be updated your self...</p>
+                            <input type="text" placeholder="Your email address"/>
+                            <button type="submit" class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i>
+                            </button>
+                            <p>Get the most recent updates from <br/>our site and be updated your self...</p>
                         </form>
                     </div>
                 </div>
@@ -363,7 +394,8 @@
         <div class="container">
             <div class="row">
                 <p class="pull-left">Copyright © 2013 E-SHOPPER Inc. All rights reserved.</p>
-                <p class="pull-right">Designed by <span><a target="_blank" href="http://www.themeum.com">Themeum</a></span></p>
+                <p class="pull-right">Designed by <span><a target="_blank"
+                                                           href="http://www.themeum.com">Themeum</a></span></p>
             </div>
         </div>
     </div>
@@ -374,15 +406,15 @@
 
     $(function () {
 
-        $('.tooltip-inner').bind('DOMSubtreeModified' ,function (e) {
+        $('.tooltip-inner').bind('DOMSubtreeModified', function (e) {
 
             let range = $(this).html();
 
             console.log(range);
             $.ajax({
                 url: '{{ route('product_by_range') }}',
-                type: "POST",
-                data: { range: range },
+                type: "GET",
+                data: {range: range},
                 headers: {
                     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -404,19 +436,20 @@
             event.preventDefault()
             let qty = parseInt($('#quantity_input').val())
             let id = $(this).data("id");
-
+            let button = $(this);
             $.ajax({
                 url: '{{ route('product_to_cart') }}',
                 type: "POST",
-                data: { id: id ,qty: qty?qty:1},
+                data: {id: id, qty: qty ? qty : 1},
                 headers: {
                     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                 },
 
                 success: function (data) {
                     let total_qty = parseInt($('#cart-qty').text())
-                    total_qty += qty ? qty:1
+                    total_qty += qty ? qty : 1
                     $('#cart-qty').text(total_qty)
+                    button.html("In The Cart");
                     console.log(data)
                 },
                 error: function (msg) {
@@ -433,14 +466,14 @@
             $.ajax({
                 url: '{{ route('product_to_cart') }}',
                 type: "POST",
-                data: { id: id ,qty: qty?qty:1},
+                data: {id: id, qty: qty ? qty : 1},
                 headers: {
                     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                 },
 
                 success: function (data) {
                     let total_qty = parseInt($('#cart-qty').text())
-                    total_qty += qty ? qty:1
+                    total_qty += qty ? qty : 1
                     $('#cart-qty').text(total_qty)
                     console.log(data)
                 },
@@ -450,7 +483,7 @@
             });
         });
 
-        $(".cart_quantity_input").on("change", function() {
+        $(".cart_quantity_input").on("change", function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

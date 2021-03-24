@@ -18,7 +18,7 @@ class UserController extends Controller
     public function index()
     {
         $title = 'Users';
-        $users = User::all();
+        $users = User::paginate(5);
         return view('admin.user.index', ['title' => $title, 'users' => $users]);
     }
 
@@ -35,18 +35,18 @@ class UserController extends Controller
             'Admin' => User::ADMIN,
             'User' => User::USER,
         ];
-        return view('admin.user.create', ['title' => $title, 'role' => $role ]);
+        return view('admin.user.create', ['title' => $title, 'role' => $role]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request->validate( [
+        $request->validate([
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -55,7 +55,7 @@ class UserController extends Controller
             'address' => ['required', 'string'],
         ]);
 
-        $this->check( $request->phone);
+        $this->check($request->phone);
         $user = new User;
         $user->firstname = $request->firstname;
         $user->lastname = $request->lastname;
@@ -76,7 +76,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -87,7 +87,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -98,20 +98,20 @@ class UserController extends Controller
             'User' => User::USER,
         ];
         $user = User::find($id);
-        return view('admin.user.edit', ['title' => $title, 'user' => $user,'role' => $role]);
+        return view('admin.user.edit', ['title' => $title, 'user' => $user, 'role' => $role]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
 
-        $request->validate( [
+        $request->validate([
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
@@ -122,16 +122,16 @@ class UserController extends Controller
 
         $user = User::find($id);
 
-        if($user->email !== $request->email){
-            $request->validate( [
+        if ($user->email !== $request->email) {
+            $request->validate([
                 'email' => ['unique:users'],
             ]);
         }
 
-        $this->check( $request->phone);
+        $this->check($request->phone);
 
 
-        if($user){
+        if ($user) {
             $user->firstname = $request->firstname;
             $user->lastname = $request->lastname;
             $user->email = $request->email;
@@ -155,14 +155,14 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $user = User::find($id);
-        if($user){
-            if( $user->delete()){
+        if ($user) {
+            if ($user->delete()) {
                 return redirect('/admin/user')->with('success', __('user.user_destroy'));
             }
         } else {
@@ -171,13 +171,14 @@ class UserController extends Controller
     }
 
 
-    public function check($phone){
-        if(strlen($phone) == 9 && substr($phone,0,1) == 0 ){
-            $this->user['phone'] = '+374'.substr($phone, 1);
-        }elseif(strlen($phone) == 12 && substr($phone,0,4) == '+374'){
+    public function check($phone)
+    {
+        if (strlen($phone) == 9 && substr($phone, 0, 1) == 0) {
+            $this->user['phone'] = '+374' . substr($phone, 1);
+        } elseif (strlen($phone) == 12 && substr($phone, 0, 4) == '+374') {
             $this->user['phone'] = $phone;
-        }elseif(strlen($phone) == 8 ){
-            $this->user['phone'] = '+374'.$phone;
+        } elseif (strlen($phone) == 8) {
+            $this->user['phone'] = '+374' . $phone;
         }
     }
 }

@@ -21,12 +21,12 @@ class ProfileController extends Controller
     public function index()
     {
         $title = 'Profile';
-        return view('admin.profile.index', ['title'=>$title]);
+        return view('admin.profile.index', ['title' => $title]);
     }
 
     public function update(Request $request)
     {
-        $request->validate( [
+        $request->validate([
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'phone' => ['required'],
@@ -35,8 +35,8 @@ class ProfileController extends Controller
             'file' => ['nullable', 'image', 'mimes:jpeg,png,jpg'],
         ]);
 
-        if(Auth::user()->email !== $request->email){
-            $request->validate( [
+        if (Auth::user()->email !== $request->email) {
+            $request->validate([
                 'email' => ['unique:users'],
             ]);
         }
@@ -50,27 +50,27 @@ class ProfileController extends Controller
         ];
 
         $phone = $request->input('phone');
-        if(strlen($phone) == 9 && substr($phone,0,1) == 0 ){
-            $user['phone'] = '+374'.substr($phone, 1);
-        }elseif(strlen($phone) == 12 && substr($phone,0,4) == '+374'){
+        if (strlen($phone) == 9 && substr($phone, 0, 1) == 0) {
+            $user['phone'] = '+374' . substr($phone, 1);
+        } elseif (strlen($phone) == 12 && substr($phone, 0, 4) == '+374') {
             $user['phone'] = $phone;
-        }elseif(strlen($phone) == 8 ){
-            $user['phone'] = '+374'.$phone;
+        } elseif (strlen($phone) == 8) {
+            $user['phone'] = '+374' . $phone;
         }
 
-        if($request->file) {
-            if(Auth::user()->image) {
+        if ($request->file) {
+            if (Auth::user()->image) {
                 ImageController::imageDelete(Auth::user()->image, true);
             }
             $image = ImageController::imageUpload($request->file, true);
             $user['image'] = $image;
         }
 
-        if($user){
+        if ($user) {
 
             $id = Auth::user()->id;
             $userAuth = User::find($id);
-            if(User::where('id',  $id)->update( $user )){
+            if (User::where('id', $id)->update($user)) {
 
                 return redirect('/admin/dashboard')->with('success', __('message.session.profile_updated'));
             }

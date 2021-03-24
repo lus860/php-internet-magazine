@@ -24,7 +24,7 @@ class CategoryController extends Controller
     public function index()
     {
         $title = 'Categories';
-        $categories = Category::all();
+        $categories = Category::paginate(5);
         return view('admin.category.index', ['title' => $title, 'categories' => $categories]);
     }
 
@@ -43,12 +43,12 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
         ]);
 
@@ -57,8 +57,8 @@ class CategoryController extends Controller
 
         if ($category) {
             $category_id = Category::latest()->first()->id;
-            if($request->subcategorie){
-                foreach ($request->subcategories as $id){
+            if ($request->subcategorie) {
+                foreach ($request->subcategories as $id) {
                     $subcategory = SubCategory::find($id);
                     $subcategory->categories()->attach($category_id);
                 }
@@ -72,7 +72,7 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -83,7 +83,7 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -91,19 +91,20 @@ class CategoryController extends Controller
         $title = 'Edit Category';
         $category = Category::find($id);
         $subcategories = SubCategory::all();
-        return view('admin.category.edit', ['title' => $title,'category' => $category, 'subcategories' => $subcategories]);
+        return view('admin.category.edit',
+            ['title' => $title, 'category' => $category, 'subcategories' => $subcategories]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
 
         ]);
@@ -113,21 +114,21 @@ class CategoryController extends Controller
 
         $old_subcategories = $category->sub_categories;
         $old_id = $category->id;
-        if($category){
-            if(Category::where('id',  $id)->update($data)){
-                foreach ($old_subcategories as $old_subcategory){
+        if ($category) {
+            if (Category::where('id', $id)->update($data)) {
+                foreach ($old_subcategories as $old_subcategory) {
                     $old_subcategory->categories()->detach($old_id);
                 }
 
-                if($request->subcategories){
-                    foreach ($request->subcategories as $id){
+                if ($request->subcategories) {
+                    foreach ($request->subcategories as $id) {
                         $subcategory = SubCategory::find($id);
                         $subcategory->categories()->attach($old_id);
                     }
                 }
 
             }
-            return redirect('/admin/category')->with('success',  __('category.category_update'));
+            return redirect('/admin/category')->with('success', __('category.category_update'));
 
             return redirect()->back()->with('error', __('message.error.some_mistake_went'));
         }
@@ -136,14 +137,14 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $category = Category::find($id);
-        if($category){
-            if( $category->delete()){
+        if ($category) {
+            if ($category->delete()) {
                 return redirect('/admin/category')->with('success', __('category.category_destroy'));
             }
         } else {

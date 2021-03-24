@@ -11,10 +11,16 @@ class Menu extends Model
     const DISABLE = 0;
 
     protected $fillable = [
-        'name', 'status',  'url',  'parent_id', 'created_at', 'updated_at'
+        'name',
+        'status',
+        'url',
+        'parent_id',
+        'created_at',
+        'updated_at'
     ];
 
-    public function childrens(){
+    public function childrens()
+    {
         return $this->hasMany(self::class, 'parent_id')->orderBy('sort_order');
     }
 

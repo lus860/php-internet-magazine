@@ -18,6 +18,6 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         $title = 'Admin Login';
-        return view('admin.auth.login', ['title'=>$title]);
+        return view('admin.auth.login', ['title' => $title]);
     }
 }

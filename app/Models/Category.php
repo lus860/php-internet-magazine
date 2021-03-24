@@ -9,23 +9,26 @@ use App\Models\Product;
 class Category extends Model
 {
     protected $fillable = [
-        'name', 'created_at', 'updated_at'
+        'name',
+        'created_at',
+        'updated_at'
     ];
 
     public function sub_categories()
     {
-        return $this->belongsToMany(SubCategory::class, 'category_subcategory','category_id', 'subcategory_id');
+        return $this->belongsToMany(SubCategory::class, 'category_subcategory', 'category_id', 'subcategory_id');
     }
 
-    public function products(){
-        return $this->hasMany(Product::class );
+    public function products()
+    {
+        return $this->hasMany(Product::class)->where('active', 1);
     }
 
     public function inArray($id)
     {
         $subcategories = $this->sub_categories()->get()->toArray();
         foreach ($subcategories as $subcategory) {
-            if(count($subcategories)>0) {
+            if (count($subcategories) > 0) {
                 if ($subcategory['id'] == $id) {
                     return true;
                 }
@@ -39,9 +42,9 @@ class Category extends Model
         $names = [];
         $sub_categories = $this->sub_categories()->get()->toArray();
         foreach ($sub_categories as $sub_category) {
-            if(count($sub_categories)>0){
+            if (count($sub_categories) > 0) {
                 $names[] = $sub_category['name'];
-            }else{
+            } else {
                 return $sub_category['name'];
             }
         }

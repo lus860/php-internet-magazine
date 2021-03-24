@@ -17,7 +17,8 @@ class DashboardController extends Controller
         $users = User::count();
         $products = Product::count();
         $newProducts = Product::where('status', 0)->count();
-        return view('admin.dashboard', ['title' => $title,
+        return view('admin.dashboard', [
+            'title' => $title,
             'usersCount' => $users,
             'productsCount' => $products,
             'newProductsCount' => $newProducts

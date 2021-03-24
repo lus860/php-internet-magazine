@@ -94,10 +94,9 @@ Route::group(['prefix' => Localization::getPrefix(), 'middleware' => 'languageMa
 
     Route::get('/', 'User\HomeController@index')->name('index');
     Route::prefix('/ajax')->group(function () {
-        Route::post('/name', 'User\ProductController@getProductAjax')->name('product_by_name');
-        Route::post('/range', 'User\ProductController@getProductByRangeAjax')->name('product_by_range');
-        Route::post('/cart', 'User\CartController@setProductCart')->name('product_to_cart');
-
+        Route::post('/product_name', 'User\ProductController@getProductByNameAjax')->name('product_by_name');
+        Route::get('/price_range', 'User\ProductController@getProductByRangeAjax')->name('product_by_range');
+        Route::post('/cart', 'User\CartController@addProductCartAjax')->name('product_to_cart');
     });
 
     Route::prefix('/cart')->group(function () {
@@ -106,6 +105,7 @@ Route::group(['prefix' => Localization::getPrefix(), 'middleware' => 'languageMa
         Route::get('/updateDown/{id}', 'User\CartController@updateDownProductCart')->name('update_down_cart');
         Route::get('/remove/{id}', 'User\CartController@removeProductCart')->name('remove_cart');
         Route::post('/update', 'User\CartController@updateProductCart')->name('update_cart');
+        Route::get('/add_to_cart/{id}', 'User\CartController@addProductCart')->name('add_to_cart');
     });
 
     Route::prefix('/user')->group(function () {
@@ -117,17 +117,11 @@ Route::group(['prefix' => Localization::getPrefix(), 'middleware' => 'languageMa
 
     //ProductController
     Route::get('/product/{id}', 'User\ProductController@getProduct')->name('product');
+    Route::get('/product/price_range/{to}/{from}', 'User\ProductController@getProductByRange')->name('product_rang');
+    Route::get('/product/name/{name}', 'User\ProductController@getProductByName')->name('product_name');
     Route::get('/category/{id}', 'User\ProductController@categoryProduct')->name('category_product');
-    Route::get('/subcategory/{id}', 'User\ProductController@subcategoryProduct')->name('subcategory_product');
+    Route::get('/subcategory/{subcategory_id}/{category_id}', 'User\ProductController@subcategoryProduct')->name('subcategory_product');
     Route::get('/brand/{id}', 'User\ProductController@brandProduct')->name('brand_product');
     Route::get('/products', 'User\ProductController@allProduct')->name('all_product');
 
-//    Route::get('/cart/updateUp/{id}', 'User\HomeController@updateUpProductCart')->name('update_up_cart');
-//    Route::get('/cart/updateDown/{id}', 'User\HomeController@updateDownProductCart')->name('update_down_cart');
-//    Route::get('/cart/remove/{id}', 'User\HomeController@removeProductCart')->name('remove_cart');
-//    Route::post('/cart/update', 'User\HomeController@updateProductCart')->name('update_cart');
-    //Route::get('/cart', 'User\HomeController@cart')->name('cart_product');
-
-//    Route::get('/user/login', 'User\AuthController@showSignInForm')->name('user_login');
-//    Route::get('/user/signup', 'User\AuthController@showSignUpForm')->name('user_signup');
 });

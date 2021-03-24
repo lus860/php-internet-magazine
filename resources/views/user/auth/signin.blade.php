@@ -10,7 +10,9 @@
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="form-group has-feedback">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email" autofocus placeholder="{{ __('auth.email') }}">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                                       name="email" value="{{ old('email') }}" autocomplete="email" autofocus
+                                       placeholder="{{ __('auth.email') }}">
 
                                 @error('email')
                                 <span class="invalid-feedback" role="alert">
@@ -19,7 +21,9 @@
                                 @enderror
                             </div>
                             <div class="form-group has-feedback">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="current-password" placeholder="{{ __('auth.password') }}">
+                                <input id="password" type="password"
+                                       class="form-control @error('password') is-invalid @enderror" name="password"
+                                       autocomplete="current-password" placeholder="{{ __('auth.password') }}">
 
                                 @error('password')
                                 <span class="invalid-feedback" role="alert">
@@ -35,7 +39,7 @@
                             <button type="submit" class="btn btn-default">{{ __('auth.sign_in') }}</button>
                         </form>
                         @if (Route::has('password.request'))
-                            <a  href="{{ route('password.request') }}">
+                            <a href="{{ route('password.request') }}">
                                 {{ __('auth.forget_your_password') }}
                             </a>
                         @endif

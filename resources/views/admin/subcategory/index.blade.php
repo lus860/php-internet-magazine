@@ -6,7 +6,8 @@
         <!-- Default box -->
         <div class="mx-auto w-75">
             <a href="{{ route('subcategory_create') }}">
-                <button type="button" class="btn btn-dark btn-lg mb-5 " data-toggle="modal" data-target="#modal-secondary">
+                <button type="button" class="btn btn-dark btn-lg mb-5 " data-toggle="modal"
+                        data-target="#modal-secondary">
                     {{ __('subcategory.new_subcategory_create') }}
                 </button>
             </a>
@@ -29,7 +30,7 @@
                         </th>
                         <th style="width:20%">
                             {{ __('subcategory.name') }}
-                        </th >
+                        </th>
                         <th style="width: 20%">
                             {{ __('subcategory.created_at') }}
                         </th>
@@ -51,19 +52,20 @@
                             <td>
                                 {{$item->name}}
                             </td>
-                            <td >
+                            <td>
                                 {{$item->created_at}}
                             </td>
                             <td>
                                 {{$item->updated_at	}}
-                            </td >
+                            </td>
                             <td class="project-actions">
                                 <a class="btn btn-primary" href="{{ route('subcategory_edit',$item->id)}}">
                                     <i class="fas fa-pencil-alt">
                                     </i>
                                     {{ __('subcategory.edit') }}
                                 </a>
-                                <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#modal-danger-{{$item->id}}" data-value="{{$item->id}}">
+                                <button class="btn btn-danger" type="button" data-toggle="modal"
+                                        data-target="#modal-danger-{{$item->id}}" data-value="{{$item->id}}">
                                     <i class="fas fa-trash">
                                     </i>
                                     {{ __('subcategory.delete') }}
@@ -72,15 +74,21 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content bg-danger">
                                             <div class="modal-header">
-                                                <h4 class="modal-title">@if ($item->products()->count() >0) You cannot remove this substitution @else Do you really want to delete @endif </h4>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <h4 class="modal-title">@if ($item->products()->count() >0) You cannot
+                                                    remove this substitution @else Do you really want to
+                                                    delete @endif </h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             @if ($item->products()->count() ==0)
                                                 <div class="modal-footer justify-content-between">
-                                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                                    <form action="{{ route('subcategory_destroy', $item->id)}}" method="post" class="px-0 mx-0" id="form">
+                                                    <button type="button" class="btn btn-outline-light"
+                                                            data-dismiss="modal">Close
+                                                    </button>
+                                                    <form action="{{ route('subcategory_destroy', $item->id)}}"
+                                                          method="post" class="px-0 mx-0" id="form">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-outline-light">Yes</button>
@@ -88,7 +96,9 @@
                                                 </div>
                                             @else
                                                 <div class="modal-footer justify-content-between">
-                                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-outline-light"
+                                                            data-dismiss="modal">Close
+                                                    </button>
                                                 </div>
                                             @endif
                                         </div>
@@ -103,7 +113,9 @@
             </div>
             <!-- /.card-body -->
         </div>
-
+        <div class="w-75 mx-auto">
+            {{ $subcategories->links() }}
+        </div>
     </section>
 
 @endsection

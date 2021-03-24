@@ -19,7 +19,9 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="inputName">{{ __('menu.menu_name') }}</label>
-                                <input type="text" id="inputName" class="form-control  @error('name') is-invalid @enderror" value="{{ $menu->name }}" name="name" placeholder="{{ __('menu.menu_name') }}">
+                                <input type="text" id="inputName"
+                                       class="form-control  @error('name') is-invalid @enderror"
+                                       value="{{ $menu->name }}" name="name" placeholder="{{ __('menu.menu_name') }}">
                                 @error('name')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -29,15 +31,18 @@
                             <div class="form-group">
                                 <label>{{ __('menu.all_menu_items') }}</label>
                                 <select class="form-control select2" style="width: 100%;" name="parent_id">
-                                    <option  value="0">{{ __('menu.main_submenu') }}</option>
+                                    <option value="0">{{ __('menu.main_submenu') }}</option>
                                     @foreach($menuItems as $k=>$item)
-                                        <option value="{{$k}}"  @if($k==$menu->parent_id) selected="selected" @endif >{{ $item }}</option>
+                                        <option value="{{$k}}"
+                                                @if($k==$menu->parent_id) selected="selected" @endif >{{ $item }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="inputName">{{ __('menu.menu_url') }}</label>
-                                <input type="text" id="inputName" class="form-control  @error('url') is-invalid @enderror" value="{{ $menu->url }}" name="url" placeholder="{{ __('menu.menu_url') }}">
+                                <input type="text" id="inputName"
+                                       class="form-control  @error('url') is-invalid @enderror" value="{{ $menu->url }}"
+                                       name="url" placeholder="{{ __('menu.menu_url') }}">
                                 @error('url')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -46,7 +51,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="inputName">{{ __('menu.menu_status') }}</label><br>
-                                <input type="checkbox" name="status" @if($menu->status ==1) checked  @endif data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                                <input type="checkbox" name="status" @if($menu->status ==1) checked
+                                       @endif data-bootstrap-switch data-off-color="danger" data-on-color="success">
                             </div>
                         </div>
                         <!-- /.card-body -->

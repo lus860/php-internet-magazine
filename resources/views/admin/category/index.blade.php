@@ -86,7 +86,7 @@
                                             @if ($item->products()->count() ==0)
                                                 <div class="modal-footer justify-content-between">
                                                     <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                                    <form action="{{ route('category_destroy', $item->id)}}" method="post" class="px-0 mx-0" id="form">
+                                                    <form action="{{ route('category_destroy', $item->id)}}" method="post" class="px-0 mx-0">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-outline-light">Yes</button>
@@ -109,7 +109,7 @@
             </div>
             <!-- /.card-body -->
         </div>
-
+        {{ $categories->links() }}
     </section>
 
 @endsection

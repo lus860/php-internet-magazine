@@ -10,8 +10,8 @@ class IsAdmin
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return mixed
      */
 
@@ -19,11 +19,6 @@ class IsAdmin
     public function handle($request, Closure $next)
     {
 
-//        if (Auth::check() &&  Auth::user()->isAdmin()) {
-//            app()->setLocale('ru');
-//            return $next($request);
-//        }
-//        return redirect()->route('admin_login');
         if (Auth::check()) {
             $user = Auth::user();
             if ($user->isAdmin()) {

@@ -104,6 +104,7 @@
             <!-- /.card-body -->
         </div>
 
+        {{ $brands->links() }}
     </section>
 
 @endsection

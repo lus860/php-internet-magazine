@@ -14,7 +14,8 @@ use Illuminate\Support\ServiceProvider;
 
 class LocalizationServiceProvider extends ServiceProvider
 {
-    public function register() {
+    public function register()
+    {
         $this->app->bind("Localization", 'App\Services\Localization\Localization');
     }
 }

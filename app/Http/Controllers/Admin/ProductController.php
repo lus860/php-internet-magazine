@@ -20,6 +20,7 @@ class ProductController extends Controller
         $this->middleware('IsAdmin');
 
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +29,7 @@ class ProductController extends Controller
     public function index()
     {
         $title = 'Products';
-        $products = Product::all();
+        $products = Product::paginate(7);
         return view('admin.product.index', ['title' => $title, 'products' => $products]);
     }
 
@@ -44,18 +45,19 @@ class ProductController extends Controller
         $categories = Category::all();
         $subcategories = SubCategory::all();
         $brands = Brand::all();
-        return view('admin.product.create', ['title' => $title, 'categories' => $categories, 'subcategories' => $subcategories,  'brands' => $brands]);
+        return view('admin.product.create',
+            ['title' => $title, 'categories' => $categories, 'subcategories' => $subcategories, 'brands' => $brands]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric'],
             'new_price' => ['numeric'],
@@ -71,28 +73,29 @@ class ProductController extends Controller
         $data['category_id'] = $request->category_id;
         $data['subcategory_id'] = $request->subcategory_id;
         $data['brand_id'] = $request->brand_id;
-        $data['status'] =  $request->status ? 1:0;
-        $data['sale'] =  $request->sale ? 1:0;
+        $data['status'] = $request->status ? 1 : 0;
+        $data['sale'] = $request->sale ? 1 : 0;
+        $data['active'] = $request->active ? 1 : 0;
 
         $product = Product::create($data);
 
-        if($request->image) {
+        if ($request->image) {
             $images = $request->image;
             foreach ($images as $img) {
                 $image = ImageController::imageUpload($img, null, $product->id);
-                if($image) {
+                if ($image) {
                     $dataImg[] = $image;
                 }
             }
         }
 
-        if($request->main_image) {
+        if ($request->main_image) {
             $main_image = $request->main_image;
             $image = ImageController::imageUpload($main_image, null, $product->id);
-            ProductImage::create(['product_id' => $product->id, 'img' => $image, 'status'=>1]);
+            ProductImage::create(['product_id' => $product->id, 'img' => $image, 'status' => 1]);
         }
 
-        if( count($dataImg)>0 ){
+        if (count($dataImg) > 0) {
             foreach ($dataImg as $item) {
                 ProductImage::create(['product_id' => $product->id, 'img' => $item]);
             }
@@ -107,7 +110,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -118,7 +121,7 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -129,7 +132,8 @@ class ProductController extends Controller
         $subcategories = SubCategory::all();
         $brands = Brand::all();
         $product = Product::find($id);
-        return view('admin.product.edit', ['title' => $title,
+        return view('admin.product.edit', [
+            'title' => $title,
             'categories' => $categories,
             'subcategories' => $subcategories,
             'brands' => $brands,
@@ -140,8 +144,8 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Update $request, $id)
@@ -153,28 +157,29 @@ class ProductController extends Controller
         $data['category_id'] = $request->category_id;
         $data['subcategory_id'] = $request->subcategory_id;
         $data['brand_id'] = $request->brand_id;
-        $data['status'] = isset($request->status) ? 1:0;
-        $data['sale'] =  isset($request->sale) ? 1:0;
+        $data['status'] = isset($request->status) ? 1 : 0;
+        $data['sale'] = isset($request->sale) ? 1 : 0;
+        $data['active'] = isset($request->active) ? 1 : 0;
 
         $product = Product::find($id);
-        if($request->image) {
+        if ($request->image) {
             $images = $request->image;
             foreach ($images as $img) {
                 $image = ImageController::imageUpload($img, null, $product->id);
-                if($image) {
+                if ($image) {
                     $dataImg[] = $image;
                 }
             }
         }
-        if( isset($dataImg) && count($dataImg)>0 ){
+        if (isset($dataImg) && count($dataImg) > 0) {
             foreach ($dataImg as $item) {
                 ProductImage::create(['product_id' => $product->id, 'img' => $item]);
             }
         }
 
-        if($product){
-            if(Product::where('id',  $id)->update($data)){
-                return redirect('/admin/product')->with('success',  __('product.product_update'));
+        if ($product) {
+            if (Product::where('id', $id)->update($data)) {
+                return redirect('/admin/product')->with('success', __('product.product_update'));
             }
 
             return redirect()->back()->with('error', __('message.error.some_mistake_went'));
@@ -186,20 +191,20 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $product = Product::find($id);
-        if($product){
-            if($product->images) {
+        if ($product) {
+            if ($product->images) {
                 foreach ($product->images as $item) {
                     ImageController::imageDelete($item->img, null, $id);
                 }
                 ImageController::pathDelete(null, $id);
             }
-            if( $product->delete()){
+            if ($product->delete()) {
                 return redirect('/admin/product')->with('success', __('product.product_destroy'));
             }
         } else {
@@ -211,13 +216,13 @@ class ProductController extends Controller
     public function imgUpdate(Request $request, $prod_id, $img_id)
     {
         $main_img = ProductImage::find($img_id);
-        if($request->hasFile('main_img')) {
-            if($main_img->img) {
+        if ($request->hasFile('main_img')) {
+            if ($main_img->img) {
                 ImageController::imageDelete($main_img->img, null, $prod_id);
             }
-            $image = ImageController::imageUpload($request->main_img , null, $prod_id);
-            if(ProductImage::where('id',  $img_id)->update(['img' => $image])){
-              return redirect('/admin/product/edit/'.$prod_id);
+            $image = ImageController::imageUpload($request->main_img, null, $prod_id);
+            if (ProductImage::where('id', $img_id)->update(['img' => $image])) {
+                return redirect('/admin/product/edit/' . $prod_id);
             }
 
         }
@@ -229,7 +234,7 @@ class ProductController extends Controller
         $image = ProductImage::find($img_id);
         if ($image) {
             if ($image->img) {
-                ImageController::imageDelete($image->img, null,$prod_id );
+                ImageController::imageDelete($image->img, null, $prod_id);
             }
             $image->delete();
             return redirect('/admin/product/edit/' . $prod_id);

@@ -13,10 +13,12 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function setProductCart(Request $request)
+    public function cartProduct($id, $qty)
     {
-        $product = Product::where('id', $request->id)->first();
-        if(!session('cart_id')) session(['cart_id'=> uniqid()]);
+        $product = Product::where('id', $id)->first();
+        if (!session('cart_id')) {
+            session(['cart_id' => uniqid()]);
+        }
         $cart_id = session('cart_id');
         \Cart::session($cart_id);
 
@@ -24,9 +26,9 @@ class CartController extends Controller
 
             $img = $product->mainImg();
 
-        } elseif($product->images()->first()->img){
+        } elseif ($product->images()->first()->img) {
 
-            $img =  $product->images()->first()->img;
+            $img = $product->images()->first()->img;
 
         } else {
             $img = '/admin/dist/img/product/no-image.png';
@@ -35,14 +37,28 @@ class CartController extends Controller
         \Cart::add([
             'id' => $product->id,
             'name' => $product->name,
-            'price' => $product->new_price !== 0? $product->new_price: $product->price,
-            'quantity' => $request->qty,
+            'price' => $product->new_price !== 0 ? $product->new_price : $product->price,
+            'quantity' => $qty,
             'attributes' => [
                 'img' => $img,
             ]
         ]);
+    }
+
+    public function addProductCartAjax(Request $request)
+    {
+        $this->cartProduct($request->id, $request->qty);
 
         return response()->json(\Cart::getContent());
+
+    }
+
+
+    public function addProductCart($id)
+    {
+        $this->cartProduct($id, 1);
+
+        return redirect()->back();
 
     }
 
@@ -98,9 +114,10 @@ class CartController extends Controller
 
     }
 
-    public function cart(Request $request) {
-        $title = 'cart';
+    public function cart(Request $request)
+    {
 
+        $title = 'cart';
         return view('user.cart.cart', ['title' => $title]);
     }
 

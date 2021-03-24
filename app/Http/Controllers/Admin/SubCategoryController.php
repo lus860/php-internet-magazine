@@ -14,6 +14,7 @@ class SubCategoryController extends Controller
         $this->middleware('IsAdmin');
 
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +23,7 @@ class SubCategoryController extends Controller
     public function index()
     {
         $title = 'Subcategories';
-        $subcategories = SubCategory::all();
+        $subcategories = SubCategory::paginate(5);
         return view('admin.subcategory.index', ['title' => $title, 'subcategories' => $subcategories]);
     }
 
@@ -41,12 +42,12 @@ class SubCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
         ]);
 
@@ -62,7 +63,7 @@ class SubCategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -73,7 +74,7 @@ class SubCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -81,19 +82,19 @@ class SubCategoryController extends Controller
         $title = 'Edit Subcategory';
         $subcategory = SubCategory::find($id);
 
-        return view('admin.subcategory.edit', ['title' => $title,'subcategory' => $subcategory]);
+        return view('admin.subcategory.edit', ['title' => $title, 'subcategory' => $subcategory]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
 
         ]);
@@ -102,9 +103,9 @@ class SubCategoryController extends Controller
 
         $subcategory = SubCategory::find($id);
 
-        if($subcategory){
-            SubCategory::where('id',  $id)->update($data);
-            return redirect('/admin/subcategory')->with('success',  __('subcategory.subcategory_update'));
+        if ($subcategory) {
+            SubCategory::where('id', $id)->update($data);
+            return redirect('/admin/subcategory')->with('success', __('subcategory.subcategory_update'));
 
             return redirect()->back()->with('error', __('message.error.some_mistake_went'));
         }
@@ -113,14 +114,14 @@ class SubCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $subcategory = SubCategory::find($id);
-        if($subcategory){
-            if( $subcategory->delete()){
+        if ($subcategory) {
+            if ($subcategory->delete()) {
                 return redirect('/admin/subcategory')->with('success', __('subcategory.subcategory_destroy'));
             }
         } else {

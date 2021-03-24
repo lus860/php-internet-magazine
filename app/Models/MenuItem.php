@@ -12,10 +12,15 @@ class MenuItem extends Model
 
 
     protected $fillable = [
-        'name', 'lang_key_word', 'url', 'menu_id', 'parent_id'
+        'name',
+        'lang_key_word',
+        'url',
+        'menu_id',
+        'parent_id'
     ];
 
-    public function childrens(){
+    public function childrens()
+    {
         return $this->hasMany(self::class, 'parent_id');
     }
 

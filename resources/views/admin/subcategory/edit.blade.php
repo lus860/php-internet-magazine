@@ -20,7 +20,10 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="inputName">{{ __('subcategory.subcategory_name') }}</label>
-                                <input type="text" id="inputName" class="form-control  @error('name') is-invalid @enderror" value="{{ $subcategory->name }}"  name="name" placeholder="{{ __('subcategory.subcategory_name') }}">
+                                <input type="text" id="inputName"
+                                       class="form-control  @error('name') is-invalid @enderror"
+                                       value="{{ $subcategory->name }}" name="name"
+                                       placeholder="{{ __('subcategory.subcategory_name') }}">
                                 @error('name')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -33,7 +36,8 @@
                     </div>
                     <!-- /.card -->
                     <div>
-                        <input type="submit" value="{{ __('subcategory.edit_subcategory') }}" class="btn btn-success float-right">
+                        <input type="submit" value="{{ __('subcategory.edit_subcategory') }}"
+                               class="btn btn-success float-right">
                     </div>
                 </div>
             </div>

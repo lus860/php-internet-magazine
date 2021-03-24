@@ -8,10 +8,13 @@ use App\Models\Product;
 class Brand extends Model
 {
     protected $fillable = [
-        'name', 'created_at', 'updated_at'
+        'name',
+        'created_at',
+        'updated_at'
     ];
 
-    public function products(){
-        return $this->hasMany(Product::class );
+    public function products()
+    {
+        return $this->hasMany(Product::class)->where('active', 1);
     }
 }

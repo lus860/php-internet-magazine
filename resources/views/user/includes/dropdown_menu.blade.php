@@ -1,4 +1,3 @@
-
 <ul class=" dropdown-menu sub-menu submenu">
     @foreach($items as $item)
         @if(count($item->childrens()->where('status', 1)->get())==0)

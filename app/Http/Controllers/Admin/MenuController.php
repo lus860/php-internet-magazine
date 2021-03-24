@@ -41,31 +41,32 @@ class MenuController extends Controller
         $title = 'Create Submenu';
         $menuItems = Menu::all();
         foreach ($menuItems as $item) {
-            if($item->parent_id == 0 ) {
+            if ($item->parent_id == 0) {
                 $this->newMenuItems[$item->id] = $item->name;
-                if(count ($item->childrens) >0) {
-                    $this->rekursiya($item, count($menuItems));
+                if (count($item->childrens) > 0) {
+                    $this->recursion($item, count($menuItems));
                 }
 
             }
         }
-        return view('admin.menu.create', ['title'=>$title, 'menuItems' => $this->newMenuItems]);
+        return view('admin.menu.create', ['title' => $title, 'menuItems' => $this->newMenuItems]);
 
     }
 
-    public function rekursiya($item, $count) {
+    public function recursion($item, $count)
+    {
 
-        if(count ($item->childrens) >0) {
+        if (count($item->childrens) > 0) {
             foreach ($item->childrens as $children) {
                 $this->parentCount = '----';
                 if ($item->parent_id !== 0) {
                     $this->parentCount($item);
                 }
-                $this->newMenuItems[$children->id] = $this->parentCount.$children->name;
+                $this->newMenuItems[$children->id] = $this->parentCount . $children->name;
                 if ($count == count($this->newMenuItems)) {
                     return;
                 } elseif (count($children->childrens) > 0) {
-                    $this->rekursiya($children, $count);
+                    $this->recursion($children, $count);
                 }
             }
         }
@@ -88,12 +89,12 @@ class MenuController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['required'],
             'url' => ['required', 'string', 'max:255'],
@@ -102,7 +103,7 @@ class MenuController extends Controller
         $data['name'] = $request->name;
         $data['url'] = $request->url;
         $data['parent_id'] = $request->parent_id;
-        $data['status'] =  $request->status ? Menu::ENABLED:Menu::DISABLE;
+        $data['status'] = $request->status ? Menu::ENABLED : Menu::DISABLE;
         $menu = Menu::create($data);
 
         if ($menu) {
@@ -116,7 +117,7 @@ class MenuController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -127,36 +128,36 @@ class MenuController extends Controller
     public function sorting(Request $request)
     {
         $json = $request->nested_menu_array;
-        $decoded_json = json_decode($json, TRUE);
+        $decoded_json = json_decode($json, true);
         $simplified_list = [];
-        $this->recur1($decoded_json, $simplified_list);
+        $this->sortingMenu($decoded_json, $simplified_list);
 
         try {
             $info = [
-                "success" => FALSE,
+                "success" => false,
             ];
 
-            foreach($simplified_list as $k => $v){
+            foreach ($simplified_list as $k => $v) {
                 $menu = Menu::find($v['id']);
                 $menu->parent_id = $v['parent_id'];
                 $menu->sort_order = $v['sort_order'];
                 $menu->save();
             }
-            $info['success'] = TRUE;
+            $info['success'] = true;
         } catch (\Exception $e) {
-            $info['success'] = FALSE;
+            $info['success'] = false;
         }
 
-        if($info['success']){
-            return redirect('/admin/menu')->with('success',  __('menu.menu_sorting_update'));
+        if ($info['success']) {
+            return redirect('/admin/menu')->with('success', __('menu.menu_sorting_update'));
 
-        }else{
+        } else {
             return redirect()->back()->with('error', __('message.error.some_mistake_went'));
         }
 
     }
 
-    public function recur1($nested_array = [], &$simplified_list = [])
+    public function sortingMenu($nested_array = [], &$simplified_list = [])
     {
 
         static $counter = 0;
@@ -172,19 +173,20 @@ class MenuController extends Controller
 
             if (!empty($v["children"])) {
                 $counter += 1;
-                $this->recur2($v['children'], $simplified_list, $v['id']);
+                $this->sortingMenuChildren($v['children'], $simplified_list, $v['id']);
             }
 
         }
     }
 
-    public function recur2($sub_nested_array=[], &$simplified_list=[], $parent_id = NULL) {
+    public function sortingMenuChildren($sub_nested_array = [], &$simplified_list = [], $parent_id = null)
+    {
 
         static $counter = 0;
 
-        foreach($sub_nested_array as $k => $v){
+        foreach ($sub_nested_array as $k => $v) {
 
-            $sort_order = $k+1;
+            $sort_order = $k + 1;
             $simplified_list[] = [
                 "id" => $v['id'],
                 "parent_id" => $parent_id,
@@ -192,8 +194,8 @@ class MenuController extends Controller
             ];
 
             if (!empty($v["children"])) {
-                $counter+=1;
-                $this->recur2($v['children'], $simplified_list, $v['id']);
+                $counter += 1;
+                $this->sortingMenuChildren($v['children'], $simplified_list, $v['id']);
             }
         }
     }
@@ -201,7 +203,7 @@ class MenuController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -210,27 +212,27 @@ class MenuController extends Controller
         $menu = Menu::find($id);
         $menuItems = Menu::all();
         foreach ($menuItems as $item) {
-            if($item->parent_id == 0 ) {
+            if ($item->parent_id == 0) {
                 $this->newMenuItems[$item->id] = $item->name;
-                if(count ($item->childrens) >0) {
+                if (count($item->childrens) > 0) {
                     $this->rekursiya($item, count($menuItems));
                 }
 
             }
         }
-        return view('admin.menu.edit', ['title' => $title,'menu' => $menu, 'menuItems' => $this->newMenuItems]);
+        return view('admin.menu.edit', ['title' => $title, 'menu' => $menu, 'menuItems' => $this->newMenuItems]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $request->validate( [
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['required'],
             'url' => ['required', 'string', 'max:255'],
@@ -239,13 +241,13 @@ class MenuController extends Controller
         $data['name'] = $request->name;
         $data['url'] = $request->url;
         $data['parent_id'] = $request->parent_id;
-        $data['status'] =  $request->status ? Menu::ENABLED:Menu::DISABLE;
+        $data['status'] = $request->status ? Menu::ENABLED : Menu::DISABLE;
 
         $menu = Menu::find($id);
 
-        if($menu){
-            Menu::where('id',  $id)->update($data);
-                return redirect('/admin/menu')->with('success',  __('menu.menu_update'));
+        if ($menu) {
+            Menu::where('id', $id)->update($data);
+            return redirect('/admin/menu')->with('success', __('menu.menu_update'));
 
             return redirect()->back()->with('error', __('message.error.some_mistake_went'));
         }
@@ -254,14 +256,14 @@ class MenuController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $menu = Menu::find($id);
-        if($menu){
-            if( $menu->delete()){
+        if ($menu) {
+            if ($menu->delete()) {
                 return redirect('/admin/menu')->with('success', __('menu.menu_destroy'));
             }
         } else {

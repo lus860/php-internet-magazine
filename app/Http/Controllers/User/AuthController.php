@@ -130,7 +130,6 @@ class AuthController extends Controller
                 ]
             );
 
-            // Переменные, которые будут доступны в шаблоне письма
             $vars = [
                 'url' => $verifyUrl
             ];

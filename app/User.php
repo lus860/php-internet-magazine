@@ -17,7 +17,10 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'email', 'password',
+        'firstname',
+        'lastname',
+        'email',
+        'password',
     ];
 
     /**
@@ -26,7 +29,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -41,36 +45,44 @@ class User extends Authenticatable implements MustVerifyEmail
     const ADMIN = 1;
     const USER = 0;
 
-    public static function checkAdmin($email, $password) {
+    public static function checkAdmin($email, $password)
+    {
         $user = self::getAdmin($email);
-        if (!$user || !Hash::check($password, $user->password)) return false;
+        if (!$user || !Hash::check($password, $user->password)) {
+            return false;
+        }
         return $user;
     }
 
-    public static function getAdmin($email) {
+    public static function getAdmin($email)
+    {
         $admin = self::where('email', $email)->where('role', self::ADMIN)->first();
-        if ($admin===null) return false;
+        if ($admin === null) {
+            return false;
+        }
         return $admin;
     }
 
-    public static function getUsers(){
+    public static function getUsers()
+    {
         return self::where('role', self::USER)->sort()->get();
     }
 
 
-    public static function getUser($email) {
-        return \App\Models\User::where(['email' => $email, 'role'=>self::USER])->first();
+    public static function getUser($email)
+    {
+        return \App\Models\User::where(['email' => $email, 'role' => self::USER])->first();
     }
 
-    public function isAdmin() {
+    public function isAdmin()
+    {
         return $this->role == self::ADMIN;
     }
 
-    public function isUser() {
+    public function isUser()
+    {
         return $this->role == self::USER;
     }
-
-
 
 
 }

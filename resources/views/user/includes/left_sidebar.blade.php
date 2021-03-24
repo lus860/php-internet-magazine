@@ -11,7 +11,8 @@
                                 <a href="{{ route('category_product' ,$item->id) }}"> {{$item->name }}</a>
                             </a>
                         @else
-                            <h4 class="panel-title"><a href="{{ route('category_product' ,$item->id) }}"> {{$item->name }}</a></h4>
+                            <h4 class="panel-title"><a
+                                    href="{{ route('category_product' ,$item->id) }}"> {{$item->name }}</a></h4>
                         @endif
                     </h4>
                 </div>
@@ -20,7 +21,9 @@
                         <div class="panel-body">
                             <ul>
                                 @foreach($item->sub_categories as $subcategory)
-                                    <li><a href="{{ route('subcategory_product' ,$subcategory->id) }}">{{$subcategory->name}}</a></li>
+                                    <li>
+                                        <a href="{{ route('subcategory_product' ,['subcategory_id' => $subcategory->id, 'category_id' => $item->id]) }}">{{$subcategory->name}}</a>
+                                    </li>
                                 @endforeach
                             </ul>
                         </div>
@@ -36,7 +39,8 @@
         <div class="brands-name">
             <ul class="nav nav-pills nav-stacked">
                 @foreach($brands as $item)
-                    <li><a href="{{ route('brand_product' ,$item->id) }}"> <span class="pull-right">({{count($item->products()->get())}})</span>{{$item->name}}</a></li>
+                    <li><a href="{{ route('brand_product' ,$item->id) }}"> <span class="pull-right">({{count($item->products()->get())}})</span>{{$item->name}}
+                        </a></li>
                 @endforeach
             </ul>
         </div>
@@ -45,13 +49,14 @@
     <div class="price-range"><!--price-range-->
         <h2>Price Range</h2>
         <div class="well text-center">
-            <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="6000" data-slider-step="50" data-slider-value="[250,450]" id="sl2" name="range"><br />
+            <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="6000" data-slider-step="50"
+                   data-slider-value="[250,4500]" id="sl2" name="range"><br/>
             <b class="pull-left">$ 0</b> <b class="pull-right">$ 6000</b>
         </div>
     </div><!--/price-range-->
 
     <div class="shipping text-center"><!--shipping-->
-        <img src="{{ asset('user/images/home/shipping.jpg')}}" alt="" />
+        <img src="{{ asset('user/images/home/shipping.jpg')}}" alt=""/>
     </div><!--/shipping-->
 
 </div>
